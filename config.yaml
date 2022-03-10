@@ -1,0 +1,10 @@
+#Currently charging?
+charging: False
+
+#Set the min/max battery percent allowed
+minPercent: 40
+maxPercent: 85
+
+#Set your Tuya/IFTTT URLs to change your smart plug. Leave them empty if you want an unfocused "connect/disconnect" alert instead
+offURL: "https://maker.ifttt.com/trigger/plug_01_on/with/key/dXELSGgfP_znEQt9rMCj282h7hreG6NXtjZg52g_z0p"
+onURL: ""
