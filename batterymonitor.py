@@ -55,14 +55,14 @@ def disconnect():
 def setChargingStatus(newChargingStatus):
     global charging
     charging = newChargingStatus
-    with winreg.CreateKey(winreg.HKEY_CURRENT_USER, regKeyName) as newKey:
+    with winreg.CreateKey(winreg.HKEY_CURRENT_USER, regSubKeyName) as newKey:
         winreg.SetValueEx(newKey, regValueName, 0, winreg.REG_DWORD, charging)
 
 #Read current charging status from registry
 def loadChargingStatus():
     global charging
     try:
-        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, regKeyName, 0, winreg.KEY_ALL_ACCESS) as key:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, regSubKeyName, 0, winreg.KEY_ALL_ACCESS) as key:
             charging = winreg.QueryValueEx(key, regValueName)[0]
     except:
         setChargingStatus(charging)

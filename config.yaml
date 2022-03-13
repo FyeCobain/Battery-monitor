@@ -3,7 +3,7 @@ minPercent: 40
 maxPercent: 85
 
 #Registry key and value name to get and store the current charging status
-regKeyName: SOFTWARE\BatteryMonitor
+regSubKeyName: SOFTWARE\BatteryMonitor
 regValueName: Charging
 
 #Set your Tuya/IFTTT URLs to switch your smart plug. Leave them empty if you want an unfocused "connect/disconnect" alert instead
