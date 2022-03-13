@@ -21,8 +21,7 @@ def GET(url):
     try:
         with urlopen(Request(url)) as response:
             return (response.status, response.read().decode())
-    except:
-        return None
+    except: return None
 
 #Checks battery's current percent each 0.5 sec
 running = True
