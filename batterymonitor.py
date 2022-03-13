@@ -6,7 +6,6 @@ from urllib.request import urlopen, Request
 import winreg
 from psutil import sensors_battery
 from ruamel.yaml import YAML
-system('cls')
 
 #Current charging status
 charging = False
