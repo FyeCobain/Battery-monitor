@@ -36,13 +36,21 @@ def start():
 
 #When the battery must be connected...
 def connect():
-    print(GET(onURL))
-    sleep(5)
+    if(onURL):
+        print(GET(onURL))
+        sleep(5)
+    else:
+        print('Please connect your battery...')
+        sleep(10)
 
 #When the battery must be disconnected...
 def disconnect():
-    print(GET(offURL))
-    sleep(5)
+    if(offURL):
+        print(GET(offURL))
+        sleep(5)
+    else:
+        print('Please disconnect your battery...')
+        sleep(10)
 
 #Write current charging status into registry
 def setChargingStatus(newChargingStatus):
