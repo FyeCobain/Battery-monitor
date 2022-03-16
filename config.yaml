@@ -1,7 +1,6 @@
 #Set the min/max battery percent allowed
 minPercent: 40
 maxPercent: 80
-
 #Registry key and value name to get and store the current charging status
 regSubKeyName: SOFTWARE\BatteryMonitor
 regValueName: Charging

@@ -1,17 +1,21 @@
 # Battery Monitor
 
-_**Version** 0.2.1 (beta)_
+_**Version** 1.0.0_
 
 A simple python script for **Windows** to monitor laptop battery percentage and prevent it from being too low or too high, helping to extend battery life.
 
 ### Requirements
-> **psutil**
+- **psutil**
 ```
 pip install psutil
 ```
-> **ruamel.yaml**
+- **ruamel.yaml**
 ```
 pip install ruamel.yaml
+```
+- **infi.systray**
+```
+pip install infi.systray
 ```
 
 ### Usage
@@ -23,3 +27,7 @@ If no URLs are set, the script will play an alert sound.
 ```console
 batterymonitor.py "C:\launchers\OpenWhenClosing.exe"
 ```
+
+### Attributions
+
+[Plug icons created by Pixel perfect - Flaticon](https://www.flaticon.com/free-icons/plug)
