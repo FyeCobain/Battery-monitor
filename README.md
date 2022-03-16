@@ -24,7 +24,7 @@ pip install infi.systray
 Designed to set up an IFTTT webhook or Tuya link to turn on/off a smart plug.
 If no URLs are set, the script will play an alert sound.
 - You can open it and set as argument the path to a file, when closing the script, the file will be opened. Thought to open the script from an application that will be closed to avoid conflicts and must be reopened when the script is no longer needed.
-```console
+```
 batterymonitor.py "C:\launchers\OpenWhenClosing.exe"
 ```
 
