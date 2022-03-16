@@ -22,9 +22,9 @@ def start():
         # Getting battery info
         battery = sensors_battery()
 
-        if(battery.percent <= minPercent): # If min percent reached...
+        if(battery.percent < minPercent): # If min percent reached...
             setChargingStatus(True)
-        elif(battery.percent >= maxPercent): # If max percent reached...
+        elif(battery.percent > maxPercent): # If max percent reached...
             setChargingStatus(False)
 
         if(charging and not battery.power_plugged): # If battery must be connected...
@@ -32,7 +32,7 @@ def start():
         elif(not charging and battery.power_plugged): #If battery must be disconnected...                plugOff()
             disconnect(battery.percent)
         
-        sleep(1.05)
+        sleep(0.5)
 
 # When the battery must be connected...
 def connect(batteryPercent):
@@ -87,7 +87,7 @@ def GET(url):
     except: return None
 
 # Getting current config as variables from the "config.yaml" file
-configFile = sub('\\\\[^\\\\]*$', '', path.realpath(__file__)) + '\config.yaml'
+configFile = sub(r'\\[^\\]*$', '', path.realpath(__file__)) + '\config.yaml'
 yaml = YAML()
 with open(configFile) as file:
     config = yaml.load(file)
@@ -100,7 +100,7 @@ callerPath = None
 if len(argv) > 1:
     if path.exists(argv[1]):
         caller = path.realpath(argv[1])
-        callerPath = sub('\\\\[^\\\\]*$', '', caller)
+        callerPath = sub(r'\\[^\\]*$', '', caller)
 
 # Start battery monitor
 start()
