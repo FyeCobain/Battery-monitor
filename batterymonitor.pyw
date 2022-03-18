@@ -67,7 +67,7 @@ def disconnect(batteryPercent):
                 if(running):
                     sleep(5000)
                 return
-    # Play a sound for "battery too charged"
+    # Play a sound for "overcharged battery"
     Beep(655, 550)
     if(running):
         sleep(5000)
