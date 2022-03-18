@@ -122,7 +122,8 @@ if len(argv) > 1:
 # Creating tray icon
 chargingTrayText = f"Charging to {maxPercent}%"
 dischargingTrayText = f"Discharging to {minPercent}%"
-sysTrayIcon = SysTrayIcon(scrPath + "\plug.ico", chargingTrayText if charging else dischargingTrayText, None, on_quit = on_closing, default_menu_index = 0)
+menu_options = (("Open script folder", None, lambda systray: startfile(scrPath)),)
+sysTrayIcon = SysTrayIcon(scrPath + "\plug.ico", chargingTrayText if charging else dischargingTrayText, menu_options, on_quit = on_closing, default_menu_index = 0)
 sysTrayIcon.start()
 
 # Start battery monitor
