@@ -1,4 +1,4 @@
-# Battery Monitor
+# `Battery Monitor`
 
 _**Version** 1.1.1_
 
