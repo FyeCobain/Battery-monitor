@@ -48,14 +48,12 @@ def connect(batteryPercent):
         response = GET(onURL)
         if(response):
             if(response[0] == 200):
-                if(running):
-                    sleep(5000)
+                sleep(5000)
                 return
     # Play a sound for "low battery"
     Beep(655, 250)
     Beep(655, 300)
-    if(running):
-        sleep(5000)
+    sleep(5000)
 
 # When the battery must be disconnected...
 def disconnect(batteryPercent):
@@ -64,13 +62,11 @@ def disconnect(batteryPercent):
         response = GET(offURL)
         if(response):
             if(response[0] == 200):
-                if(running):
-                    sleep(5000)
+                sleep(5000)
                 return
     # Play a sound for "overcharged battery"
     Beep(655, 550)
-    if(running):
-        sleep(5000)
+    sleep(5000)
 
 # Write current charging status into registry
 def setChargingStatus(newChargingStatus):
