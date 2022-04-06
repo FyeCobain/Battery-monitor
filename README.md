@@ -1,6 +1,6 @@
 # `Battery Monitor`
 
-_**Version** 1.2.0_
+_**Version** 1.2.1_
 
 A simple python script for **Windows** to monitor laptop battery percentage and prevent it from being too low or too high, helping to extend battery life. It works as tray icon.
 
