@@ -29,9 +29,9 @@ def start():
             setChargingStatus(False)
 
         if(charging and not battery.power_plugged): # If battery must be connected...
-            connect(battery.percent)
+            connect()
         elif(not charging and battery.power_plugged): #If battery must be disconnected...
-            disconnect(battery.percent)
+            disconnect()
         
         sleep(500)
 
@@ -42,7 +42,7 @@ def sleep(miliseconds):
         pass
 
 # When the battery must be connected...
-def connect(batteryPercent):
+def connect():
     # Triying to make GET request
     if(onURL):
         response = GET(onURL)
@@ -56,7 +56,7 @@ def connect(batteryPercent):
     sleep(5000)
 
 # When the battery must be disconnected...
-def disconnect(batteryPercent):
+def disconnect():
     # Triying to make GET request
     if(offURL):
         response = GET(offURL)
