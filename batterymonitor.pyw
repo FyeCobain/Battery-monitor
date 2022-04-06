@@ -1,4 +1,4 @@
-from os import path, startfile
+from os import path, system, startfile
 from re import sub
 from sys import argv
 from time import time
@@ -10,7 +10,7 @@ from psutil import sensors_battery
 from ruamel.yaml import YAML
 
 # Current charging status
-charging = False
+charging = True
 
 # Checks battery's current percent each 0.5 seconds
 running = True
@@ -97,7 +97,7 @@ def on_closing(sysTrayIcon):
     running = False
     if(caller):
         startfile(caller)
-
+        
 # Getting current script path
 scrPath = sub(r'\\[^\\]*$', '', path.realpath(__file__))
 
@@ -118,7 +118,7 @@ if len(argv) > 1:
 # Creating tray icon
 chargingTrayText = f"Charging to {maxPercent}%"
 dischargingTrayText = f"Discharging to {minPercent}%"
-menu_options = (("Open script folder", None, lambda systray: startfile(scrPath)),)
+menu_options = ((f"Ping to {domain}", None, lambda systray: system(f'ping {domain} & TIMEOUT /T 6')), ("Open script folder", None, lambda systray: startfile(scrPath)))
 sysTrayIcon = SysTrayIcon(scrPath + "\plug.ico", chargingTrayText if charging else dischargingTrayText, menu_options, on_quit = on_closing, default_menu_index = 0)
 sysTrayIcon.start()
 
