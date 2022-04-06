@@ -2,7 +2,7 @@
 
 _**Version** 1.2.0_
 
-A simple python script for **Windows** to monitor laptop battery percentage and prevent it from being too low or too high, helping to extend battery life.
+A simple python script for **Windows** to monitor laptop battery percentage and prevent it from being too low or too high, helping to extend battery life. It works as tray icon.
 
 ### Requirements
 - **psutil**
@@ -28,7 +28,7 @@ Designed to set up an IFTTT webhook or Tuya link to turn on/off a smart plug.
 If no ON/OFF URLs are set, the script will play an alert sound instead.
 - You can open it and set as argument the path to a file, when closing the script, the file will be opened. Thought to open the script from an application that must be closed and will be reopened when the script is no longer needed.
 ```
-batterymonitor.pyw "C:\launchers\OpenWhenClosing.exe"
+batterymonitor.pyw "C:\launcher\OpenWhenClosing.exe"
 ```
 
 ### Attributions
