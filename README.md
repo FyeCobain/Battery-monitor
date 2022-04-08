@@ -28,7 +28,7 @@ Designed to set up an IFTTT webhook or Tuya link to turn on/off a smart plug.
 If no ON/OFF URLs are set, the script will play an alert sound instead.
 - You can open it and set as argument the path to a file, when closing the script, the file will be opened. Thought to open the script from an application that must be closed and will be reopened when the script is no longer needed.
 ```
-batterymonitor.pyw "C:\launcher\OpenWhenClosing.exe"
+batterymonitor.pyw "C:\OpenWhenClosing.exe"
 ```
 
 ### Attributions
