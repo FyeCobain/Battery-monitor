@@ -66,11 +66,14 @@ def GET(url):
 
 # Write current charging status into registry and update tray icon's text
 def setChargingStatus(newChargingStatus):
-    sysTrayIcon.update(hover_text = chargingTrayText if newChargingStatus else dischargingTrayText)
     global charging
     charging = newChargingStatus
     with winreg.CreateKey(winreg.HKEY_CURRENT_USER, regSubKeyName) as newKey:
         winreg.SetValueEx(newKey, regValueName, 0, winreg.REG_DWORD, charging)
+    try:
+        sysTrayIcon.update(hover_text = chargingTrayText if newChargingStatus else dischargingTrayText)
+    except:
+        pass
 
 # Read current charging status from registry
 def loadChargingStatus():
