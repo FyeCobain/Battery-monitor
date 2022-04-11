@@ -29,9 +29,9 @@ def start():
             setChargingStatus(False)
 
         if(charging and not battery.power_plugged): # If battery must be connected...
-            connect()
+            connect(True)
         elif(not charging and battery.power_plugged): #If battery must be disconnected...
-            disconnect()
+            connect(False)
         
         sleep(500)
 
@@ -41,32 +41,30 @@ def sleep(miliseconds):
     while(running and round(time() * 1000) - startTime < miliseconds):
         pass
 
-# When the battery must be connected...
-def connect():
-    # Triying to make GET request
-    if(onURL):
-        response = GET(onURL)
+def connect(turnOn):
+    # Triying to make a GET request...
+    url = onURL if turnOn else offURL
+    if(url):
+        response = GET(url)
         if(response):
             if(response[0] == 200):
                 sleep(5000)
                 return
-    # Play a sound for "low battery"
-    Beep(655, 250)
-    Beep(655, 300)
+    
+    if(turnOn): # Double sound if battery must be connected
+        Beep(655, 250)
+        Beep(655, 300)
+    else:
+        Beep(655, 550) # Single sound if battery must be disconnected
+
     sleep(5000)
 
-# When the battery must be disconnected...
-def disconnect():
-    # Triying to make GET request
-    if(offURL):
-        response = GET(offURL)
-        if(response):
-            if(response[0] == 200):
-                sleep(5000)
-                return
-    # Play a sound for "overcharged battery"
-    Beep(655, 550)
-    sleep(5000)
+# Perform a GET request and return response data as a tuple
+def GET(url):
+    try:
+        with urlopen(Request(url)) as response:
+            return (response.status, response.read().decode())
+    except: return None
 
 # Write current charging status into registry
 def setChargingStatus(newChargingStatus):
@@ -83,13 +81,6 @@ def loadChargingStatus():
             charging = winreg.QueryValueEx(key, regValueName)[0]
     except:
         setChargingStatus(charging)
-
-# Perform a GET request and return response data as a tuple
-def GET(url):
-    try:
-        with urlopen(Request(url)) as response:
-            return (response.status, response.read().decode())
-    except: return None
 
 # When closing, stop battery monitor and run "caller" file (if not None)
 def on_closing(sysTrayIcon):
