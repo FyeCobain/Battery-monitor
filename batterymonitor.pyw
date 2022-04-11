@@ -111,6 +111,7 @@ regValueName = config['REG']['regValueName']
 pingDomain = config['URLS']['pingDomain']
 onURL = config['URLS']['onURL']
 offURL = config['URLS']['offURL']
+
 loadChargingStatus()
 
 # Checking if there is a file path as an argument, if so have it open when this script is closed
