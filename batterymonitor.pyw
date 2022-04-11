@@ -6,8 +6,8 @@ from configparser import ConfigParser
 from urllib.request import urlopen, Request
 import winreg
 from winsound import Beep
-from infi.systray import SysTrayIcon
 from psutil import sensors_battery
+from infi.systray import SysTrayIcon
 
 # Current charging status
 charging = True
