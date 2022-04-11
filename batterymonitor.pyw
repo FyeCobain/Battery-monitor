@@ -2,12 +2,12 @@ from os import path, system, startfile
 from re import sub
 from sys import argv
 from time import time
+from configparser import ConfigParser
 from urllib.request import urlopen, Request
 import winreg
 from winsound import Beep
 from infi.systray import SysTrayIcon
 from psutil import sensors_battery
-from ruamel.yaml import YAML
 
 # Current charging status
 charging = True
@@ -101,13 +101,17 @@ def on_closing(sysTrayIcon):
 # Getting current script path
 scrPath = sub(r'\\[^\\]*$', '', path.realpath(__file__))
 
-# Getting config as variables from the "config.yaml" file
-configFile = scrPath + '\config.yaml'
-yaml = YAML()
-with open(configFile) as file:
-    config = yaml.load(file)
-    locals().update(config)
-    loadChargingStatus()
+# Getting config as variables from the "config.ini" file
+config = ConfigParser()
+config.read(scrPath + '\config.ini')
+minPercent = int(config['BATTERY_RANGE']['minPercent'])
+maxPercent = int(config['BATTERY_RANGE']['maxPercent'])
+regSubKeyName = config['REG']['regSubKeyName']
+regValueName = config['REG']['regValueName']
+pingDomain = config['URLS']['pingDomain']
+onURL = config['URLS']['onURL']
+offURL = config['URLS']['offURL']
+loadChargingStatus()
 
 # Checking if there is a file path as an argument, if so have it open when this script is closed
 caller = None
@@ -119,7 +123,7 @@ if len(argv) > 1:
 chargingTrayText = f"Charging to {maxPercent}%"
 dischargingTrayText = f"Discharging to {minPercent}%"
 menu_options = (
-    (f"Ping to {domain}", None, lambda systray: system(f'ping {domain} & TIMEOUT /T 6')),
+    (f"Ping to {pingDomain}", None, lambda systray: system(f'ping {pingDomain} & TIMEOUT /T 6')),
     ("Open script folder", None, lambda systray: startfile(scrPath))
 )
 sysTrayIcon = SysTrayIcon(scrPath + "\plug.ico", chargingTrayText if charging else dischargingTrayText, menu_options, on_quit = on_closing, default_menu_index = 0)

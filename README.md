@@ -1,6 +1,6 @@
 # `Battery Monitor`
 
-_**Version** 1.2.1_
+_**Version** 2.0.0_
 
 A simple python script for **Windows** to monitor laptop battery percentage and prevent it from being too low or too high, helping to extend battery life. It works as tray icon.
 
@@ -9,10 +9,6 @@ A simple python script for **Windows** to monitor laptop battery percentage and 
 ```console
 pip install psutil
 ```
-- **ruamel.yaml**
-```console
-pip install ruamel.yaml
-```
 - **infi.systray**
 ```console
 pip install infi.systray
@@ -20,7 +16,7 @@ pip install infi.systray
 
 ### Usage
 
-> To configure the script edit the _config.yaml_ file
+> To configure the script edit the _config.ini_ file
 
 - You can specify a domain to ping. Useful for gaming.
 - You can configure two URLs so that the script makes a GET request when the percentage is less than the minimum or greater than the maximum set.
