@@ -22,10 +22,8 @@ def start():
         battery = sensors_battery()
 
         if(battery.percent <= minPercent): # If min percent reached...
-            sysTrayIcon.update(hover_text = chargingTrayText)
             setChargingStatus(True)
         elif(battery.percent >= maxPercent): # If max percent reached...
-            sysTrayIcon.update(hover_text = dischargingTrayText)
             setChargingStatus(False)
 
         if(charging and not battery.power_plugged): # If battery must be connected...
@@ -66,8 +64,9 @@ def GET(url):
             return (response.status, response.read().decode())
     except: return None
 
-# Write current charging status into registry
+# Write current charging status into registry and update tray icon's text
 def setChargingStatus(newChargingStatus):
+    sysTrayIcon.update(hover_text = chargingTrayText if newChargingStatus else dischargingTrayText)
     global charging
     charging = newChargingStatus
     with winreg.CreateKey(winreg.HKEY_CURRENT_USER, regSubKeyName) as newKey:
