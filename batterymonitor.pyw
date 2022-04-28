@@ -49,11 +49,11 @@ def connect(turn_on):
                 sleep(5000)
                 return
     
-    if(turn_on): # Double sound if battery must be connected
+    if(turn_on): # Double beep if battery must be connected
         Beep(655, 250)
         Beep(655, 300)
     else:
-        Beep(655, 550) # Single sound if battery must be disconnected
+        Beep(655, 550) # Single long beep if battery must be disconnected
 
     sleep(5000)
 
@@ -97,11 +97,10 @@ scr_path = sub(r'\\[^\\]*$', '', path.realpath(__file__))
 # Getting config as variables from the "config.ini" file
 config = ConfigParser()
 config.read(scr_path + '\config.ini')
-locals().update(config['BATTERY_RANGE'])
+min_percent = int(config['BATTERY_RANGE']['min_percent'])
+max_percent = int(config['BATTERY_RANGE']['max_percent'])
 locals().update(config['REG'])
 locals().update(config['URLS'])
-min_percent = int(min_percent)
-max_percent = int(max_percent)
 
 load_charging_status()
 

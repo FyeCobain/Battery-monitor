@@ -21,7 +21,7 @@ pip install infi.systray
 - You can specify a domain to ping. Useful for gaming.
 - You can configure two URLs so that the script makes a GET request when the percentage is less than the minimum or greater than the maximum set.
 Designed to set up an IFTTT webhook or Tuya link to turn on/off a smart plug.
-If no ON/OFF URLs are set, the script will play an alert sound instead.
+If no ON/OFF URLs are set, the script will play a double beep when the battery must be connected and a long beep when it must be disconnected.
 - You can open it and set as argument the path to a file, when closing the script, the file will be opened. Thought to open the script from an application that must be closed and will be reopened when the script is no longer needed.
 ```
 batterymonitor.pyw "C:\OpenWhenClosing.exe"
