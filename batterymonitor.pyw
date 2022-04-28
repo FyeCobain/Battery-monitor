@@ -21,10 +21,10 @@ def start():
         # Getting battery info
         battery = sensors_battery()
 
-        if(battery.percent <= minPercent): # If min percent reached...
-            setChargingStatus(True)
-        elif(battery.percent >= maxPercent): # If max percent reached...
-            setChargingStatus(False)
+        if(battery.percent <= min_percent): # If min percent reached...
+            set_charging_status(True)
+        elif(battery.percent >= max_percent): # If max percent reached...
+            set_charging_status(False)
 
         if(charging and not battery.power_plugged): # If battery must be connected...
             connect(True)
@@ -35,21 +35,21 @@ def start():
 
 # Custom sleep function, to sleep only if battery monitor is running
 def sleep(miliseconds):
-    startTime = round(time() * 1000)
-    while(running and round(time() * 1000) - startTime < miliseconds):
+    start_time = round(time() * 1000)
+    while(running and round(time() * 1000) - start_time < miliseconds):
         pass
 
-def connect(turnOn):
+def connect(turn_on):
     # Triying to make a GET request...
-    url = onURL if turnOn else offURL
+    url = on_url if turn_on else off_url
     if(url):
-        response = GET(url)
+        response = get(url)
         if(response):
             if(response[0] == 200):
                 sleep(5000)
                 return
     
-    if(turnOn): # Double sound if battery must be connected
+    if(turn_on): # Double sound if battery must be connected
         Beep(655, 250)
         Beep(655, 300)
     else:
@@ -58,31 +58,31 @@ def connect(turnOn):
     sleep(5000)
 
 # Perform a GET request and return response data as a tuple
-def GET(url):
+def get(url):
     try:
         with urlopen(Request(url)) as response:
             return (response.status, response.read().decode())
     except: return None
 
 # Write current charging status into registry and update tray icon's text
-def setChargingStatus(newChargingStatus):
+def set_charging_status(new_charging_status):
     global charging
-    charging = newChargingStatus
-    with winreg.CreateKey(winreg.HKEY_CURRENT_USER, regSubKeyName) as newKey:
-        winreg.SetValueEx(newKey, regValueName, 0, winreg.REG_DWORD, charging)
+    charging = new_charging_status
+    with winreg.CreateKey(winreg.HKEY_CURRENT_USER, reg_subkey) as new_key:
+        winreg.SetValueEx(new_key, reg_value, 0, winreg.REG_DWORD, charging)
     try:
-        sysTrayIcon.update(hover_text = chargingTrayText if newChargingStatus else dischargingTrayText)
+        sysTrayIcon.update(hover_text = charging_tray_text if charging else discharging_tray_text)
     except:
         pass
 
 # Read current charging status from registry
-def loadChargingStatus():
+def load_charging_status():
     global charging
     try:
-        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, regSubKeyName, 0, winreg.KEY_ALL_ACCESS) as key:
-            charging = winreg.QueryValueEx(key, regValueName)[0]
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_subkey, 0, winreg.KEY_ALL_ACCESS) as key:
+            charging = winreg.QueryValueEx(key, reg_value)[0]
     except:
-        setChargingStatus(charging)
+        set_charging_status(charging)
 
 # When closing, stop battery monitor and run "caller" file (if not None)
 def on_closing(sysTrayIcon):
@@ -92,20 +92,18 @@ def on_closing(sysTrayIcon):
         startfile(caller)
         
 # Getting current script path
-scrPath = sub(r'\\[^\\]*$', '', path.realpath(__file__))
+scr_path = sub(r'\\[^\\]*$', '', path.realpath(__file__))
 
 # Getting config as variables from the "config.ini" file
 config = ConfigParser()
-config.read(scrPath + '\config.ini')
-minPercent = int(config['BATTERY_RANGE']['minPercent'])
-maxPercent = int(config['BATTERY_RANGE']['maxPercent'])
-regSubKeyName = config['REG']['regSubKeyName']
-regValueName = config['REG']['regValueName']
-pingDomain = config['URLS']['pingDomain']
-onURL = config['URLS']['onURL']
-offURL = config['URLS']['offURL']
+config.read(scr_path + '\config.ini')
+locals().update(config['BATTERY_RANGE'])
+locals().update(config['REG'])
+locals().update(config['URLS'])
+min_percent = int(min_percent)
+max_percent = int(max_percent)
 
-loadChargingStatus()
+load_charging_status()
 
 # Checking if there is a file path as an argument, if so have it open when this script is closed
 caller = None
@@ -114,13 +112,13 @@ if len(argv) > 1:
         caller = path.realpath(argv[1])
 
 # Creating tray icon
-chargingTrayText = f"Charging to {maxPercent}%"
-dischargingTrayText = f"Discharging to {minPercent}%"
+charging_tray_text = f"Charging to {max_percent}%"
+discharging_tray_text = f"Discharging to {min_percent}%"
 menu_options = (
-    (f"Ping to {pingDomain}", None, lambda systray: system(f'ping {pingDomain} & TIMEOUT /T 6')),
-    ("Open script folder", None, lambda systray: startfile(scrPath))
+    (f"Ping to {ping_domain}", None, lambda systray: system(f'ping {ping_domain} & TIMEOUT /T 6')),
+    ("Open script folder", None, lambda systray: startfile(scr_path))
 )
-sysTrayIcon = SysTrayIcon(scrPath + "\plug.ico", chargingTrayText if charging else dischargingTrayText, menu_options, on_quit = on_closing, default_menu_index = 0)
+sysTrayIcon = SysTrayIcon(scr_path + "\plug.ico", charging_tray_text if charging else discharging_tray_text, menu_options, on_quit = on_closing, default_menu_index = 0)
 sysTrayIcon.start()
 
 # Start battery monitor
