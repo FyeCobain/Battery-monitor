@@ -27,9 +27,9 @@ def start():
             set_charging_status(False)
 
         if(charging and not battery.power_plugged): # If battery must be connected...
-            connect(True)
+            plug(True)
         elif(not charging and battery.power_plugged): #If battery must be disconnected...
-            connect(False)
+            plug(False)
         
         sleep(500)
 
@@ -39,7 +39,7 @@ def sleep(miliseconds):
     while(running and round(time() * 1000) - start_time < miliseconds):
         pass
 
-def connect(turn_on):
+def plug(turn_on):
     # Triying to make a GET request...
     url = on_url if turn_on else off_url
     if(url):
