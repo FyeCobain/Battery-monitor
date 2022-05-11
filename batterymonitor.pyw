@@ -39,9 +39,10 @@ def sleep(miliseconds):
     while(running and round(time() * 1000) - start_time < miliseconds):
         pass
 
-def plug(turn_on):
+# Set plug state
+def plug(on):
     # Triying to make a GET request...
-    url = on_url if turn_on else off_url
+    url = on_url if on else off_url
     if(url):
         response = get(url)
         if(response):
@@ -49,7 +50,7 @@ def plug(turn_on):
                 sleep(5000)
                 return
     
-    if(turn_on): # Double beep if battery must be connected
+    if(on): # Double beep if battery must be connected
         Beep(655, 250)
         Beep(655, 300)
     else:
@@ -60,7 +61,7 @@ def plug(turn_on):
 # Perform a GET request and return response data as a tuple
 def get(url):
     try:
-        with urlopen(Request(url)) as response:
+        with urlopen(Request(url), timeout = 10) as response:
             return (response.status, response.read().decode())
     except: return None
 
