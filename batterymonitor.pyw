@@ -27,7 +27,7 @@ def start():
             set_charging_status(False)
 
         # Updating tray icon's tooltip
-        sysTrayIcon.update(hover_text = ("Cargando: " if charging else "Descargando: ") + f'{battery.percent}%')
+        sysTrayIcon.update(hover_text = ("Charging" if charging else "Discharging") + f': {battery.percent}%')
 
         if(charging and not battery.power_plugged): # If battery must be connected...
             plug(True)
@@ -61,7 +61,7 @@ def plug(on):
     else:
         Beep(655, 550) # Single long beep if battery must be disconnected
 
-    sleep(5000)
+    sleep(4000)
 
 # Perform a GET request and return response data as a tuple
 def get(url):
@@ -113,16 +113,11 @@ if len(argv) > 1:
         caller = path.realpath(argv[1])
 
 # Creating tray icon
-<<<<<<< HEAD
-charging_tray_text = f"Charging to {max_percent}%"
-discharging_tray_text = f"Discharging to {min_percent}%"
-=======
->>>>>>> 1315ff2 (Version 2.2.0)
 menu_options = (
     (f"Ping to {ping_domain}", None, lambda systray: system(f'ping {ping_domain} & TIMEOUT /T 6')),
     ("Open script folder", None, lambda systray: startfile(scr_path))
 )
-sysTrayIcon = SysTrayIcon(scr_path + "\plug.ico", f"Cargando al {max_percent}%" if charging else f"Descargando al {min_percent}%", menu_options, on_quit = on_closing, default_menu_index = 0)
+sysTrayIcon = SysTrayIcon(scr_path + "\plug.ico", f"Charging to {max_percent}%" if charging else f"Discharging to {min_percent}%", menu_options, on_quit = on_closing, default_menu_index = 0)
 sysTrayIcon.start()
 
 # Start battery monitor
