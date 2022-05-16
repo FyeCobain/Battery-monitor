@@ -12,7 +12,7 @@ from infi.systray import SysTrayIcon
 # Current charging status
 charging = True
 
-# Checks battery's current percent each 0.5 seconds
+# Checks battery's current percent each second
 running = True
 def start():
     global running
@@ -26,12 +26,15 @@ def start():
         elif(battery.percent >= max_percent): # If max percent reached...
             set_charging_status(False)
 
+        # Updating tray icon's tooltip
+        sysTrayIcon.update(hover_text = ("Cargando: " if charging else "Descargando: ") + f'{battery.percent}%')
+
         if(charging and not battery.power_plugged): # If battery must be connected...
             plug(True)
         elif(not charging and battery.power_plugged): #If battery must be disconnected...
             plug(False)
-        
-        sleep(500)
+
+        sleep(1000)
 
 # Custom sleep function, to sleep only if battery monitor is running
 def sleep(miliseconds):
@@ -47,8 +50,10 @@ def plug(on):
         response = get(url)
         if(response):
             if(response[0] == 200):
-                sleep(5000)
-                return
+                sleep(6000)
+                battery = sensors_battery()
+                if(on and battery.power_plugged or not on and not battery.power_plugged):
+                    return
     
     if(on): # Double beep if battery must be connected
         Beep(655, 250)
@@ -71,10 +76,6 @@ def set_charging_status(new_charging_status):
     charging = new_charging_status
     with winreg.CreateKey(winreg.HKEY_CURRENT_USER, reg_subkey) as new_key:
         winreg.SetValueEx(new_key, reg_value, 0, winreg.REG_DWORD, charging)
-    try:
-        sysTrayIcon.update(hover_text = charging_tray_text if charging else discharging_tray_text)
-    except:
-        pass
 
 # Read current charging status from registry
 def load_charging_status():
@@ -112,13 +113,16 @@ if len(argv) > 1:
         caller = path.realpath(argv[1])
 
 # Creating tray icon
+<<<<<<< HEAD
 charging_tray_text = f"Charging to {max_percent}%"
 discharging_tray_text = f"Discharging to {min_percent}%"
+=======
+>>>>>>> 1315ff2 (Version 2.2.0)
 menu_options = (
     (f"Ping to {ping_domain}", None, lambda systray: system(f'ping {ping_domain} & TIMEOUT /T 6')),
     ("Open script folder", None, lambda systray: startfile(scr_path))
 )
-sysTrayIcon = SysTrayIcon(scr_path + "\plug.ico", charging_tray_text if charging else discharging_tray_text, menu_options, on_quit = on_closing, default_menu_index = 0)
+sysTrayIcon = SysTrayIcon(scr_path + "\plug.ico", f"Cargando al {max_percent}%" if charging else f"Descargando al {min_percent}%", menu_options, on_quit = on_closing, default_menu_index = 0)
 sysTrayIcon.start()
 
 # Start battery monitor
