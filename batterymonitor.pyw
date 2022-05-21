@@ -44,6 +44,7 @@ def sleep(miliseconds):
 
 # Set plug state
 def plug(on):
+    sleepTime = 5000
     # Triying to make a GET request...
     url = on_url if on else off_url
     if(url):
@@ -51,6 +52,7 @@ def plug(on):
         if(response):
             if(response[0] == 200):
                 sleep(7000)
+                sleepTime = 0
                 battery = sensors_battery()
                 if(on and battery.power_plugged or not on and not battery.power_plugged):
                     return
@@ -61,7 +63,7 @@ def plug(on):
     else:
         Beep(655, 550) # Single long beep if battery must be disconnected
 
-    sleep(4000)
+    sleep(sleepTime)
 
 # Perform a GET request and return response data as a tuple
 def get(url):
