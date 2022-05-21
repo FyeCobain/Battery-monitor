@@ -50,7 +50,7 @@ def plug(on):
         response = get(url)
         if(response):
             if(response[0] == 200):
-                sleep(6000)
+                sleep(7000)
                 battery = sensors_battery()
                 if(on and battery.power_plugged or not on and not battery.power_plugged):
                     return
