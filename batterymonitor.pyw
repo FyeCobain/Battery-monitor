@@ -91,6 +91,7 @@ def load_charging_status():
 # When closing, stop battery monitor and run "caller" file (if not None)
 def on_closing(sysTrayIcon):
     global running
+    global caller
     running = False
     if(caller):
         startfile(caller)
