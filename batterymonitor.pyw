@@ -95,6 +95,7 @@ def on_closing(sysTrayIcon):
     running = False
     if(caller):
         startfile(caller)
+        caller = None
         
 # Getting current script path
 scr_path = sub(r'\\[^\\]*$', '', path.realpath(__file__))
