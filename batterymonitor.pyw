@@ -40,7 +40,7 @@ def start():
 def sleep(miliseconds):
     start_time = round(time() * 1000)
     while(running and round(time() * 1000) - start_time < miliseconds):
-        pass
+        continue
 
 # Set plug state
 def plug(on):
