@@ -1,16 +1,20 @@
+import subprocess
 from os import path, system, startfile
-from re import sub
+from re import search, sub
 from sys import argv
 from time import time
 from configparser import ConfigParser
 from urllib.request import urlopen, Request
 import winreg
 from winsound import Beep
-from psutil import sensors_battery
 from infi.systray import SysTrayIcon
 
 # Current charging status
 charging = True
+
+# Startup info for subprocesses
+startupinfo = subprocess.STARTUPINFO()
+startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
 # Checks battery's current percent each second
 running = True
@@ -19,22 +23,33 @@ def start():
     global charging
     while(running):
         # Getting battery info
-        battery = sensors_battery()
+        battery_percent = get_battery_percent()
 
-        if(battery.percent <= min_percent): # If min percent reached...
+        if(battery_percent <= min_percent): # If min percent reached...
             set_charging_status(True)
-        elif(battery.percent >= max_percent): # If max percent reached...
+        elif(battery_percent >= max_percent): # If max percent reached...
             set_charging_status(False)
 
         # Updating tray icon's tooltip
-        sysTrayIcon.update(hover_text = ("Charging" if charging else "Discharging") + f': {battery.percent}%')
+        sysTrayIcon.update(hover_text = ("Charging" if charging else "Discharging") + f': {battery_percent}%')
 
-        if(charging and not battery.power_plugged): # If battery must be connected...
+        charger_plugged = charger_is_plugged()
+        if(charging and not charger_plugged): # If battery must be connected...
             plug(True)
-        elif(not charging and battery.power_plugged): #If battery must be disconnected...
+        elif(not charging and charger_plugged): #If battery must be disconnected...
             plug(False)
 
         sleep(1000)
+
+# Returns the current battery percent
+def get_battery_percent():
+    process = subprocess.Popen('WMIC PATH Win32_Battery Get EstimatedChargeRemaining', startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return int(search("\d+", str(process.stdout.read())).group(0))
+
+# Returns true if the charger is plugged in
+def charger_is_plugged():
+    process = subprocess.Popen('WMIC Path Win32_Battery Get BatteryStatus', startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return (search("\d+", str(process.stdout.read())).group(0)) == '2'
 
 # Custom sleep function, to sleep only if battery monitor is running
 def sleep(miliseconds):
@@ -53,8 +68,8 @@ def plug(on):
             if(response[0] == 200):
                 sleep(sleepTime * 2)
                 sleepTime = 0
-                battery = sensors_battery()
-                if(on and battery.power_plugged or not on and not battery.power_plugged):
+                charger_plugged = charger_is_plugged()
+                if(on and charger_plugged or not on and not charger_plugged):
                     return
     
     if(on): # Double beep if battery must be connected
