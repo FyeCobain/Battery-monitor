@@ -21,22 +21,22 @@ running = True
 def start():
     global running
     global charging
-    while(running):
+    while running:
         # Getting battery info
         battery_percent = get_battery_percent()
 
-        if(battery_percent <= min_percent): # If min percent reached...
+        if battery_percent <= min_percent: # If min percent reached...
             set_charging_status(True)
-        elif(battery_percent >= max_percent): # If max percent reached...
+        elif battery_percent >= max_percent: # If max percent reached...
             set_charging_status(False)
 
         # Updating tray icon's tooltip
         sysTrayIcon.update(hover_text = ("Charging" if charging else "Discharging") + f': {battery_percent}%')
 
         charger_plugged = charger_is_plugged()
-        if(charging and not charger_plugged): # If battery must be connected...
+        if charging and not charger_plugged: # If battery must be connected...
             plug(True)
-        elif(not charging and charger_plugged): #If battery must be disconnected...
+        elif not charging and charger_plugged: #If battery must be disconnected...
             plug(False)
 
         sleep(1000)
@@ -54,7 +54,7 @@ def charger_is_plugged():
 # Custom sleep function, to sleep only if battery monitor is running
 def sleep(miliseconds):
     start_time = round(time() * 1000)
-    while(running and round(time() * 1000) - start_time < miliseconds):
+    while running and round(time() * 1000) - start_time < miliseconds:
         continue
 
 # Set plug state
@@ -62,17 +62,17 @@ def plug(on):
     sleepTime = 5000
     # Triying to make a GET request...
     url = on_url if on else off_url
-    if(url):
+    if url:
         response = get(url)
-        if(response):
-            if(response[0] == 200):
+        if response:
+            if response[0] == 200:
                 sleep(sleepTime * 2)
                 sleepTime = 0
                 charger_plugged = charger_is_plugged()
-                if(on and charger_plugged or not on and not charger_plugged):
+                if on and charger_plugged or not on and not charger_plugged:
                     return
     
-    if(on): # Double beep if battery must be connected
+    if on: # Double beep if battery must be connected
         Beep(655, 250)
         Beep(655, 300)
     else:
@@ -108,7 +108,7 @@ def on_closing(sysTrayIcon):
     global running
     global caller
     running = False
-    if(caller):
+    if caller:
         startfile(caller)
         caller = None
         
