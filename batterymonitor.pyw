@@ -30,6 +30,9 @@ def start():
         elif battery_percent >= max_percent: # If max percent reached...
             set_charging_status(False)
 
+        # Getting charging status
+        load_charging_status()
+
         # Updating tray icon's tooltip
         sysTrayIcon.update(hover_text = ("Charging" if charging else "Discharging") + f': {battery_percent}%')
 
@@ -39,7 +42,7 @@ def start():
         elif not charging and charger_plugged: #If battery must be disconnected...
             plug(False)
 
-        sleep(1000)
+        sleep(1500)
 
 # Returns the current battery percent
 def get_battery_percent():
