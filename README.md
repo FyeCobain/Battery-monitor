@@ -1,8 +1,8 @@
 # `Battery Monitor`
 
-_**Version** 3.2.0_
+_**Version** 3.3.0_
 
-A Python script for **Windows** to monitor and control laptop battery percentage and prevent it from being too low or too high, helping to extend battery lifetime. It works as a tray icon.
+A Python script for **Windows** to monitor and control laptop charge percentage and prevent it from being too low or too high, helping to extend battery lifetime. It works as a tray icon.
 
 ### Requirements
 - **[infi.systray](https://github.com/Infinidat/infi.systray)**

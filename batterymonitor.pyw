@@ -86,7 +86,8 @@ def plug(on):
             return
     
     if on: # Double beep if battery must be connected
-        Beep(655, 250)
+        Beep(655, 200)
+        sleep(25)
         Beep(655, 300)
     else:
         Beep(655, 550) # Single long beep if battery must be disconnected
@@ -148,10 +149,16 @@ if len(argv) > 1:
         caller = path.realpath(argv[1])
 
 # Creating tray icon
-menu_options = (
-    (f"Ping to {ping_domain}", None, lambda systray: system(f'ping {ping_domain} & TIMEOUT /T 6')),
-    ("Open script dir", None, lambda systray: startfile(scr_path))
-)
+if ping_domain:
+    menu_options = (
+        (f"Ping to {ping_domain}", None, lambda systray: system(f'ping {ping_domain} & TIMEOUT /T 6')),
+        ("Open script dir", None, lambda systray: startfile(scr_path))
+    )
+else:
+    menu_options = (
+        ("Open script dir", None, lambda systray: startfile(scr_path)),
+    )
+
 sysTrayIcon = SysTrayIcon(scr_path + "\plug.ico", f"Charging to {max_percent}%" if charging else f"Discharging to {min_percent}%", menu_options, on_quit = on_closing, default_menu_index = 0)
 sysTrayIcon.start()
 
