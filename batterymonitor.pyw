@@ -159,7 +159,7 @@ else:
         ("Open script dir", None, lambda systray: startfile(scr_path)),
     )
 
-sysTrayIcon = SysTrayIcon(scr_path + "\plug.ico", f"Charging to {max_percent}%" if charging else f"Discharging to {min_percent}%", menu_options, on_quit = on_closing, default_menu_index = 0)
+sysTrayIcon = SysTrayIcon(scr_path + '\plug.ico', 'Battery Monitor', menu_options, on_quit = on_closing, default_menu_index = 0)
 sysTrayIcon.start()
 
 # Start battery monitor
