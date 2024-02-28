@@ -1,8 +1,8 @@
 # `Battery Monitor`
 
-_**Version** 3.1.0_
+_**Version** 3.2.0_
 
-A simple Python script for **Windows** to monitor laptop battery percentage and prevent it from being too low or too high, helping to extend battery life. It works as a tray icon.
+A Python script for **Windows** to monitor and control laptop battery percentage and prevent it from being too low or too high, helping to extend battery lifetime. It works as a tray icon.
 
 ### Requirements
 - **[infi.systray](https://github.com/Infinidat/infi.systray)**
@@ -10,15 +10,20 @@ A simple Python script for **Windows** to monitor laptop battery percentage and 
 pip install infi.systray
 ```
 
+#### Optional tool
+- **[Smart Plug Switch](https://github.com/FyeCobain/Smart-Plug-Switch)**
+(it requires [tinytuya](https://github.com/jasonacox/tinytuya))
+
 ### Usage
 
 > To configure the script edit the _config.ini_ file
 
-- You can set a domain to ping. Useful for gaming.
-- You can configure two URLs so that the script makes a GET request when the percentage is less than the minimum or greater than the maximum set.
-Designed to set up an IFTTT webhook to turn on/off a smart plug.
-If no ON/OFF URLs are set, the script will make a double beep when the battery needs to be connected and a long beep when it needs to be disconnected.
-- You can open it by setting the path to a file as an argument, closing the script will open the file. Intended to open the script from an application that needs to be closed and will reopen when the user closes the script.
+- You can set a **domain** to ping. Useful for gaming.
+- You can set two **URLs** so that the script makes a GET request when the percentage is less than the minimum or greater than the maximum allowed. Intended to set up an **IFTTT** webhook, a **Tuya** endpoint or similar to turn **ON/OFF** a smart plug.
+- You can also put the [Smart Plug Switch](https://github.com/FyeCobain/Smart-Plug-Switch) script in the same directory and add the required device information for the same or even a better result.
+
+If no ON/OFF **URLs** and no **Smart Plug Switch** parameters are set, the script will make a **double beep** when the battery needs to be connected and a **long beep** when it needs to be disconnected.
+- You can open it with the path to a file as an argument, closing the script will open that file. Intended to open the script from an application that needs to be closed and will be reopened when the user exits the script.
 ```
 batterymonitor.pyw "C:\OpenWhenClosing.exe"
 ```

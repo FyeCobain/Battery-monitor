@@ -63,7 +63,7 @@ def sleep(miliseconds):
 # Set plug state
 def plug(on):
     sleepTime = 5000
-    # Triying to make a GET request...
+    # Performing a GET request
     url = on_url if on else off_url
     if url:
         response = get(url)
@@ -74,6 +74,16 @@ def plug(on):
                 charger_plugged = charger_is_plugged()
                 if on and charger_plugged or not on and not charger_plugged:
                     return
+    # Executing the "Smart Plug Switch" script
+    elif path.isfile(switch_path) and d_id and d_ip and d_key and d_protocol:
+        state = 'ON' if on else 'OFF'
+        process = subprocess.Popen(f'python "{switch_path}" "{d_id}" "{d_ip}" "{d_key}" "{d_protocol}" {state}', startupinfo=startupinfo)
+        process.wait()
+        sleep(sleepTime)
+        sleepTime = 0
+        charger_plugged = charger_is_plugged()
+        if on and charger_plugged or not on and not charger_plugged:
+            return
     
     if on: # Double beep if battery must be connected
         Beep(655, 250)
@@ -117,6 +127,8 @@ def on_closing(sysTrayIcon):
         
 # Getting current script path
 scr_path = sub(r'\\[^\\]*$', '', path.realpath(__file__))
+# Smart Switch Plug script path
+switch_path = f'{scr_path}\\smart_plug_switch.py'
 
 # Getting config as variables from the "config.ini" file
 config = ConfigParser()
@@ -125,6 +137,7 @@ min_percent = int(config['BATTERY_RANGE']['min_percent'])
 max_percent = int(config['BATTERY_RANGE']['max_percent'])
 locals().update(config['REG'])
 locals().update(config['URLS'])
+locals().update(config['PLUG_DEVICE'])
 
 load_charging_status()
 
@@ -137,7 +150,7 @@ if len(argv) > 1:
 # Creating tray icon
 menu_options = (
     (f"Ping to {ping_domain}", None, lambda systray: system(f'ping {ping_domain} & TIMEOUT /T 6')),
-    ("Open script folder", None, lambda systray: startfile(scr_path))
+    ("Open script dir", None, lambda systray: startfile(scr_path))
 )
 sysTrayIcon = SysTrayIcon(scr_path + "\plug.ico", f"Charging to {max_percent}%" if charging else f"Discharging to {min_percent}%", menu_options, on_quit = on_closing, default_menu_index = 0)
 sysTrayIcon.start()
