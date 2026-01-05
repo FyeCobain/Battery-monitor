@@ -9,7 +9,7 @@ from urllib.parse import urlencode
 import json
 import winreg
 from winsound import PlaySound, SND_FILENAME
-from infi.systray import SysTrayIcon
+from simplesystray import SysTrayIcon
 from time import sleep as sl
 
 # Startup info for subprocesses
@@ -147,6 +147,31 @@ locals().update(config['PING_DOMAIN'])
 locals().update(config['WEBHOOKS'])
 locals().update(config['KASA_DEVICE'])
 
+# Returns true if the script will run at start
+def does_run_at_start():
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Run", 0, winreg.KEY_ALL_ACCESS) as key:
+            value = winreg.QueryValueEx(key, "BatteryMonitor")[0]
+            return value.strip().lower() == __file__.strip().lower()
+        return False
+    except:
+        return False
+    return False
+
+# Toggles the "Run at start" option
+def toggle_run_at_start():
+    try:
+        if not does_run_at_start():
+            with winreg.CreateKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Run") as new_key:
+                winreg.SetValueEx(new_key, "BatteryMonitor", 0, winreg.REG_SZ, __file__)
+        else:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Run", 0, winreg.KEY_SET_VALUE) as key:
+                winreg.DeleteValue(key, "BatteryMonitor")
+    except:
+        None
+
+    sysTrayIcon.update(menu_options = get_menu_options())
+
 # tries to turn off the smart plug and shutdowns the computer
 def shutdown():
     global running
@@ -175,28 +200,30 @@ if len(argv) > 1:
     if path.exists(argv[1]):
         caller = path.realpath(argv[1])
 
-# Creating tray icon
-if ping_domain:
-    menu_options = (
-        (f"Ping to {ping_domain}", None, lambda systray: system(f'ping {ping_domain} & TIMEOUT /T 6')),
-        ("Open script dir", None, lambda systray: startfile(scr_path)),
-        ("Shutdown", scr_path + r'\icons\shutdown.ico', (
-            ("Shutdown", scr_path + r'\icons\shutdown.ico', lambda systray: shutdown()),
-            ("Reboot", scr_path + r'\icons\restart.ico', lambda systray: reboot()),
-            ("Hibernate", scr_path + r'\icons\clock.ico', lambda systray: hibernate())
-        ))
-    )
-else:
-    menu_options = (
-        ("Open script dir", None, lambda systray: startfile(scr_path)),
-        ("Shutdown", scr_path + r'\icons\shutdown.ico', (
-            ("Shutdown", scr_path + r'\icons\shutdown.ico', lambda systray: shutdown()),
-            ("Reboot", scr_path + r'\icons\restart.ico', lambda systray: reboot()),
-            ("Hibernate", scr_path + r'\icons\clock.ico', lambda systray: hibernate())
-        ))
-    )
+def get_menu_options():
+    if ping_domain:
+        return (
+            (f"Ping to {ping_domain}", None, lambda systray, num: system(f'ping {ping_domain} & TIMEOUT /T 6')),
+            ("Open script dir", None, lambda systray, num: startfile(scr_path)),
+            ("Run at start", scr_path + r'\icons\check.ico' if does_run_at_start() else None, lambda systray, num: toggle_run_at_start()),
+            ("Shutdown", scr_path + r'\icons\shutdown.ico', (
+                ("Shutdown", scr_path + r'\icons\shutdown.ico', lambda systray, num: shutdown()),
+                ("Reboot", scr_path + r'\icons\restart.ico', lambda systray, num: reboot()),
+                ("Hibernate", scr_path + r'\icons\clock.ico', lambda systray, num: hibernate())
+            )),
+        )
+    else:
+        return (
+            ("Open script dir", None, lambda systray, num: startfile(scr_path)),
+            ("Run at start", scr_path + r'\icons\check.ico' if does_run_at_start() else None, lambda systray, num: toggle_run_at_start()),
+            ("Shutdown", scr_path + r'\icons\shutdown.ico', (
+                ("Shutdown", scr_path + r'\icons\shutdown.ico', lambda systray, num: shutdown()),
+                ("Reboot", scr_path + r'\icons\restart.ico', lambda systray, num: reboot()),
+                ("Hibernate", scr_path + r'\icons\clock.ico', lambda systray, num: hibernate())
+            )),
+        )
 
-sysTrayIcon = SysTrayIcon(scr_path + r'\icons\plug.ico', 'Battery Monitor', menu_options, on_quit = on_closing, default_menu_index = 0)
+sysTrayIcon = SysTrayIcon(scr_path + r'\icons\plug.ico', 'Battery Monitor', menu_options = get_menu_options(), on_quit = on_closing, default_menu_index = 0)
 sysTrayIcon.start()
 
 # Start battery monitor
