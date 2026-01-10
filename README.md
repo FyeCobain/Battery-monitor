@@ -10,6 +10,9 @@ A Python script for **Windows** that monitors and controls the laptop's battery 
 pip install simplesystray
 ```
 
+### Source Code
+**[GitHub](https://github.com/FyeCobain/Battery-monitor)**
+
 ### Usage
 
 > To configure the script edit the _config.ini_ file

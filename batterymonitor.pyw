@@ -206,21 +206,15 @@ def get_menu_options():
             (f"Ping to {ping_domain}", None, lambda systray, num: system(f'ping {ping_domain} & TIMEOUT /T 6')),
             ("Open script dir", None, lambda systray, num: startfile(scr_path)),
             ("Run at start", scr_path + r'\icons\check.ico' if does_run_at_start() else None, lambda systray, num: toggle_run_at_start()),
-            ("Shutdown", scr_path + r'\icons\shutdown.ico', (
-                ("Shutdown", scr_path + r'\icons\shutdown.ico', lambda systray, num: shutdown()),
-                ("Reboot", scr_path + r'\icons\restart.ico', lambda systray, num: reboot()),
-                ("Hibernate", scr_path + r'\icons\clock.ico', lambda systray, num: hibernate())
-            )),
+            ("Shutdown", scr_path + r'\icons\shutdown.ico', lambda systray, num: shutdown()),
+            ("Hibernate", scr_path + r'\icons\clock.ico', lambda systray, num: hibernate())
         )
     else:
         return (
             ("Open script dir", None, lambda systray, num: startfile(scr_path)),
             ("Run at start", scr_path + r'\icons\check.ico' if does_run_at_start() else None, lambda systray, num: toggle_run_at_start()),
-            ("Shutdown", scr_path + r'\icons\shutdown.ico', (
-                ("Shutdown", scr_path + r'\icons\shutdown.ico', lambda systray, num: shutdown()),
-                ("Reboot", scr_path + r'\icons\restart.ico', lambda systray, num: reboot()),
-                ("Hibernate", scr_path + r'\icons\clock.ico', lambda systray, num: hibernate())
-            )),
+            ("Shutdown", scr_path + r'\icons\shutdown.ico', lambda systray, num: shutdown()),
+            ("Hibernate", scr_path + r'\icons\clock.ico', lambda systray, num: hibernate())
         )
 
 sysTrayIcon = SysTrayIcon(scr_path + r'\icons\plug.ico', 'Battery Monitor', menu_options = get_menu_options(), on_quit = on_closing, default_menu_index = 0)
