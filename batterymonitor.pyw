@@ -130,7 +130,7 @@ def post(url, body):
                 if not error_code in kasa_error_codes:
                     kasa_error_codes.append(error_code)
                     windll.user32.MessageBoxTimeoutW(0, f"Error { error_code }: { bodyData["msg"] }", "Kasa device error - BatteryMonitor", 0x10, 0, 30000)
-            return (response.status, data)
+            return (response.status, bodyData)
     except Exception as e:
         return None
 
