@@ -2,6 +2,7 @@ import subprocess
 from os import path, system, startfile
 from re import search, sub
 from sys import argv
+from ctypes import windll
 from time import time
 from configparser import ConfigParser
 from urllib.request import urlopen, Request
@@ -19,6 +20,7 @@ startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 # Checks battery's current percent each second
 running = True
 paused = False
+kasa_error_codes = []
 def start():
     global running
     global paused
@@ -122,8 +124,14 @@ def post(url, body):
             method="POST"
         )
         with urlopen(request, timeout = 5) as response:
-            return (response.status, response.read().decode())
-    except:
+            bodyData = json.loads(response.read().decode("utf-8"))
+            error_code = bodyData["error_code"]
+            if error_code != 0:
+                if not error_code in kasa_error_codes:
+                    kasa_error_codes.append(error_code)
+                    windll.user32.MessageBoxTimeoutW(0, f"Error { error_code }: { bodyData["msg"] }", "Kasa device error - BatteryMonitor", 0x10, 0, 30000)
+            return (response.status, data)
+    except Exception as e:
         return None
 
 # When closing, stop battery monitor and run "caller" file (if not None)
